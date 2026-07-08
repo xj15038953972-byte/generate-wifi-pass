@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Generate strong WiFi passwords instantly. Free, secure, runs in your browser — nothing is uploaded."
+    />
+    <meta property="og:title" content="Generate WiFi Pass — Strong WiFi Password Generator" />
+    <meta
+      property="og:description"
+      content="Create secure WPA/WPA2 WiFi passwords in one click. 100% client-side."
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>Generate WiFi Pass — WiFi Password Generator</title>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <div class="logo" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 18c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-4-3c2.2 0 4.2.9 5.7 2.3l1.4-1.4C13.1 13.3 10.6 12.2 8 12.2s-5.1 1.1-6.1 2.7l1.4 1.4C4.8 14.9 6.8 15 8 15zm8 0c1.2 0 3.2-.1 4.7-1.7l1.4 1.4C17.1 15.9 14.6 17 12 17s-5.1-1.1-6.1-2.7l1.4-1.4C8.8 14.9 10.8 15 12 15zM12 8c3.9 0 7.4 1.6 9.9 4.1l1.4-1.4C20.5 8.4 16.5 6.5 12 6.5S3.5 8.4 1.7 10.7l1.4 1.4C5.6 9.6 9.1 8 12 8z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+        <div>
+          <h1>Generate WiFi Pass</h1>
+          <p class="subtitle">Strong passwords for WPA / WPA2 / WPA3 — generated locally in your browser</p>
+        </div>
+      </header>
+
+      <main>
+        <section class="card password-card" aria-labelledby="password-label">
+          <div class="password-display">
+            <output id="password" class="password" aria-label="Generated WiFi password">—</output>
+          </div>
+
+          <div class="strength" aria-live="polite">
+            <div class="strength-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+              <div id="strength-fill" class="strength-fill"></div>
+            </div>
+            <span id="strength-label" class="strength-label">—</span>
+          </div>
+          <p id="strength-warnings" class="warnings" hidden></p>
+
+          <div class="actions">
+            <button type="button" id="btn-regenerate" class="btn btn-secondary">
+              Regenerate
+            </button>
+            <button type="button" id="btn-copy" class="btn btn-primary">
+              Copy password
+            </button>
+          </div>
+        </section>
+
+        <section class="card settings-card" aria-labelledby="settings-heading">
+          <h2 id="settings-heading">Settings</h2>
+
+          <fieldset class="mode-toggle" aria-label="Password mode">
+            <legend class="sr-only">Password mode</legend>
+            <label class="mode-option">
+              <input type="radio" name="mode" id="mode-random" value="random" checked />
+              <span>Random</span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="mode" id="mode-memorable" value="memorable" />
+              <span>Memorable</span>
+            </label>
+          </fieldset>
+          <p id="mode-hint" class="mode-hint">Random mixed characters — maximum entropy</p>
+
+          <div id="random-settings">
+            <div class="field">
+              <div class="field-header">
+                <label for="length">Length</label>
+                <span id="length-value" class="field-value">16</span>
+              </div>
+              <input
+                type="range"
+                id="length"
+                min="8"
+                max="63"
+                value="16"
+                aria-valuemin="8"
+                aria-valuemax="63"
+              />
+            </div>
+
+            <fieldset class="checkbox-group">
+              <legend>Character sets</legend>
+              <label class="checkbox">
+                <input type="checkbox" id="uppercase" checked />
+                Uppercase (A–Z)
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="lowercase" checked />
+                Lowercase (a–z)
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="numbers" checked />
+                Numbers (0–9)
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="symbols" checked />
+                Symbols (!@#$…)
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="exclude-ambiguous" checked />
+                Exclude ambiguous (0/O, 1/l)
+              </label>
+            </fieldset>
+          </div>
+
+          <div id="memorable-settings" hidden>
+            <div class="field">
+              <div class="field-header">
+                <label for="word-count">Word count</label>
+                <span id="word-count-value" class="field-value">4</span>
+              </div>
+              <input
+                type="range"
+                id="word-count"
+                min="3"
+                max="6"
+                value="4"
+                aria-valuemin="3"
+                aria-valuemax="6"
+              />
+            </div>
+
+            <fieldset class="checkbox-group">
+              <legend>Passphrase options</legend>
+              <label class="checkbox">
+                <input type="checkbox" id="capitalize-words" checked />
+                Randomly capitalize words
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="add-number-suffix" checked />
+                Append a 2-digit number
+              </label>
+            </fieldset>
+          </div>
+
+          <button type="button" id="btn-recommended" class="btn btn-ghost">
+            Reset to recommended
+          </button>
+        </section>
+
+        <section class="card qr-card" aria-labelledby="qr-heading">
+          <details id="qr-details">
+            <summary>
+              <h2 id="qr-heading">WiFi QR Code</h2>
+            </summary>
+
+            <div class="qr-form">
+              <label class="field-inline">
+                Network name (SSID)
+                <input type="text" id="ssid" placeholder="MyWiFi" autocomplete="off" />
+              </label>
+
+              <label class="field-inline">
+                Security
+                <select id="security">
+                  <option value="WPA" selected>WPA / WPA2 (recommended)</option>
+                  <option value="WEP">WEP (not recommended)</option>
+                  <option value="nopass">Open network</option>
+                </select>
+              </label>
+
+              <div class="qr-preview">
+                <canvas id="qr-canvas" aria-label="WiFi QR code"></canvas>
+                <p id="qr-hint" class="hint">Enter an SSID to generate a scannable QR code</p>
+              </div>
+
+              <button type="button" id="btn-download-qr" class="btn btn-secondary" disabled>
+                Download QR (PNG)
+              </button>
+            </div>
+          </details>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>
+          Passwords are generated locally with <code>crypto.getRandomValues</code>. Nothing is sent to any server.
+          This tool creates new passwords only — it does not crack or recover WiFi networks.
+        </p>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
